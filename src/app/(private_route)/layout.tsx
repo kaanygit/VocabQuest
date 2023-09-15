@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../(admin)/api/auth/[...nextauth]/route";
 import { LoadingComponent } from "@/component/export";
 import { Suspense } from "react";
-import { ChildrenProps } from "../types/types";
+import { ChildrenProps } from "../../types/types";
 import { redirect } from "next/navigation"
 
 

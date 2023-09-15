@@ -5,6 +5,7 @@ import { PT_Serif } from 'next/font/google'
 import { authOptions } from './(admin)/api/auth/[...nextauth]/route'
 import { AuthProvider, LoadingComponent, NavbarAuthComponent, NavbarNotAuthComponent } from '@/component/export'
 import { Suspense } from 'react'
+import { ProviderStore } from '@/redux/provider'
 
 
 const ptSerif=PT_Serif({
@@ -23,21 +24,24 @@ export default async function RootLayout({
   const session=await getServerSession(authOptions);
   return (
     <AuthProvider>
-      <html lang="en">
-        <body className={ptSerif.className}>
-          {session?(
-            <>
-              <NavbarAuthComponent/>
-              <Suspense fallback={<LoadingComponent/>}>{children}</Suspense>
-            </>
-          ):(
-            <>
-              <NavbarNotAuthComponent/>
-              <Suspense fallback={<LoadingComponent/>}>{children}</Suspense>
-            </>
-          )}
-        </body>
-      </html>
+      <ProviderStore>
+        <html lang="en">
+          <body className={ptSerif.className}>
+            {session?(
+              <>
+                <NavbarAuthComponent/>
+                <Suspense fallback={<LoadingComponent/>}>{children}</Suspense>
+              </>
+            ):(
+              <>
+                <NavbarNotAuthComponent/>
+                <Suspense fallback={<LoadingComponent/>}>{children}</Suspense>
+              </>
+            )}
+          </body>
+        </html>
+
+      </ProviderStore>
     </AuthProvider>
   )
 }

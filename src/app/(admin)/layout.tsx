@@ -1,4 +1,4 @@
-import { ChildrenProps } from "../types/types";
+import { ChildrenProps } from "../../types/types";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth"
 import { LoadingComponent } from "@/component/export";
