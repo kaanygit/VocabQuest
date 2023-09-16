@@ -1,6 +1,6 @@
-import startDatabase from "@/lib/database";
-import UsersModel from "@/lib/models/user";
 import { NextResponse } from "next/server";
+import startDatabase from "../../../../../lib/database";
+import UsersModel from "../../../../../lib/models/user";
 
 
 
