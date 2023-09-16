@@ -24,6 +24,7 @@ declare global {
 }
 
 const middleWares = [logger].filter((middleware): middleware is Middleware => Boolean(middleware));
+
 const composeEnhancer = (process.env.NODE_ENV !== 'production' && window && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
 
 const composeEnhancers = composeEnhancer(applyMiddleware(...middleWares));

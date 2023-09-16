@@ -1,5 +1,7 @@
 import { LoadingComponent } from "../../../component/export";
 
-export default function Loading(){
+const Loading:React.FC=()=>{
     return <LoadingComponent/>
 }
+
+export default Loading;

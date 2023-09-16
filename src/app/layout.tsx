@@ -3,9 +3,9 @@ import type { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { PT_Serif } from 'next/font/google'
 import { authOptions } from './(admin)/api/auth/[...nextauth]/route'
-import { AuthProvider, LoadingComponent, NavbarAuthComponent, NavbarNotAuthComponent } from '@/component/export'
 import { Suspense } from 'react'
-import { ProviderStore } from '@/redux/provider'
+import { ProviderStore } from '../redux/provider'
+import { AuthProvider, LoadingComponent, NavbarAuthComponent, NavbarNotAuthComponent } from '../component/export'
 
 
 const ptSerif=PT_Serif({

@@ -5,9 +5,9 @@ import { Transition } from '@headlessui/react';
 import Character from '../assets/main-character.png'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { AuthComponent, LoadingComponent } from '@/component/export';
 import {useSession} from 'next-auth/react'
 import { redirect } from 'next/navigation'
+import { AuthComponent, LoadingComponent } from '../component/export';
 
 export default function Home() {
   const [showPageTransition,setShowPageTransition]=useState<boolean>(false);

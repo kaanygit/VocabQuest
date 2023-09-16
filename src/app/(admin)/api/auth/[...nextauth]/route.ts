@@ -1,8 +1,8 @@
 import {NextAuthOptions} from 'next-auth';
-import UsersModel from '@/lib/models/user';
-import startDatabase from '@/lib/database';
 import NextAuth from 'next-auth/next';
 import CredentialsContainer from "next-auth/providers/credentials"
+import startDatabase from '../../../../../lib/database';
+import UsersModel from '../../../../../lib/models/user';
 
 
 

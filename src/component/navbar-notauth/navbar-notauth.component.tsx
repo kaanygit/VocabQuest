@@ -17,7 +17,15 @@ const NavbarNotAuthComponent:React.FC=()=>{
     },[])
     useEffect(()=>{
         setAuthModeLocal(localStorage.getItem('authMode'));
-    },[authModeLocal])
+        if(authModeLocal==='true'){
+            document.documentElement.classList.add('dark'); 
+            document.body.style.backgroundColor = '#222831'; 
+        }else{
+            document.documentElement.classList.remove('dark')
+            document.body.style.backgroundColor = '#f6f7f7';
+        }
+     },[authModeLocal])
+
 
     const handleDarkmode=()=>{
         localStorage.setItem('darkmode','false');
@@ -40,7 +48,7 @@ const NavbarNotAuthComponent:React.FC=()=>{
     };
 
     return(
-        <nav className="flex w-full h-full items-center px-16 py-12 " >
+        <nav className="flex w-full h-full items-center px-16 py-12 transform duration-300 ease-in-out dark:bg-dark-color-1 bg-sectionColor" >
             <div className="flex-1  flex justify-start items-center text-center">
                 <label className="pr-2 text-3xl">VocabQuest</label>
                 <label className='pr-5 text-4xl'><LuWholeWord/></label>
