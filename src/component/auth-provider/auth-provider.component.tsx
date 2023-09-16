@@ -1,5 +1,5 @@
 "use client"
-import { ChildrenProps } from '@/types/types'
+import { ChildrenProps } from '../../types/types'
 import {SessionProvider} from 'next-auth/react'
 
 
