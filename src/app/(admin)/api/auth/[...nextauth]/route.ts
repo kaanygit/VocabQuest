@@ -31,6 +31,7 @@ export const authOptions:NextAuthOptions={
                     username:user.username,
                     email:user.email,
                     role:user.role,
+                    guessword:user.guessword,
                     id:user._id,
                 };
             },
@@ -43,6 +44,7 @@ export const authOptions:NextAuthOptions={
                 params.token.id=params.user.id
                 params.token.username=params.user.username
                 params.token.email=params.user.email
+                params.token.guessword=params.user.guessword
             }
             return params.token
         },
@@ -51,7 +53,8 @@ export const authOptions:NextAuthOptions={
                 (session.user as {id:string}).id=token.id as string;
                 (session.user as {role:string}).role=token.role as string;
                 (session.user as { username: string }).username = token.username as string;
-                (session.user as {email:string}).email=token.email as string;     
+                (session.user as {email:string}).email=token.email as string;    
+                (session.user as unknown as {guessword:[]}).guessword=token.guessword as []; 
             }
             return session
         }

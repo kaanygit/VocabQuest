@@ -8,6 +8,7 @@ interface UserDocumention extends Document{
     username:string;
     email:string;
     password:string;
+    guessword:[];
     role:"admin"|"user";
 }
 
@@ -17,6 +18,7 @@ declare module 'next-auth'{
             role:string;
             id:string;
             username:string;
+            guessword:any;
         }
     }
 }
@@ -31,6 +33,7 @@ const userDocumentSchema=new Schema<UserDocumention,{},Methods>({
     email:{type:String,required:true,unique:true},
     username:{type:String,required:true,unique:true,trim:true},
     password:{type:String,required:true},
+    guessword:{type:[],required:true,default:[]},
     role:{type:String,enum:['admin','user'],default:'user'},    
 });
 

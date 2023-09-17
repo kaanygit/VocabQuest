@@ -6,6 +6,9 @@ import { Word } from "../../../redux/features/words/words.types"
 import {WordsList} from '../../../redux/features/words/fetch-words'
 import { toast } from "react-toastify"
 import {FaRegLightbulb} from 'react-icons/fa'
+import { getSession, useSession } from "next-auth/react"
+import { Session } from "next-auth"
+import axios from "axios"
 
 interface InitialWordInterface{
     english:string;
@@ -17,6 +20,10 @@ interface GetRandomWord{
     turkish:[];
     _v:number;
 }
+interface SendGuessWord{
+    userId:string;
+    englishWord:string;
+}
 const InitialState:InitialWordInterface={
     english:'',
     turkish:[]
@@ -24,6 +31,7 @@ const InitialState:InitialWordInterface={
 
 
 const DashboardPage:React.FC=()=>{
+    const { data: session, status }=useSession();
     const getList:any=UseAppSelector((state)=>state.wordsReducers.words)!==null?WordsList():null;
     const getWords:Word[]=UseAppSelector(state=>state.wordsReducers.words);
     const [showPageTransition,setShowPageTransition]=useState<boolean>(false);
@@ -31,6 +39,7 @@ const DashboardPage:React.FC=()=>{
     const [randomWord,setRandomWord]=useState<GetRandomWord>(undefined);
     const [knowWord,setKnowWord]=useState<number>(0);
     const [popupOpen,setPopupOpen]=useState<boolean>(false);
+    const [guessSendsWords,setSendsGuessWords]=useState<SendGuessWord>();
     const darkMode:string=localStorage.getItem('darkmode');
 
     const {english,turkish}=formValue;
@@ -43,20 +52,38 @@ const DashboardPage:React.FC=()=>{
         e.preventDefault();
         try {
             console.log(formValue);
-            console.log(randomWord.turkish.length);
             const turkishValue:string=formValue.turkish.toString().toLocaleLowerCase().trim();
-            randomWord.turkish.map((word:string)=>{
+            randomWord.turkish.map(async(word:string)=>{
                 if(word===turkishValue){
                     console.log('Kelime Bildiniz Tebrikler');
                     setKnowWord(1);
                     document.body.style.backgroundColor = '#22c55e'; 
+                    //findByIdGuessWord Update
+                    try {
+                        console.log(guessSendsWords);
+                        const response=await fetch('/api/auth/setword',{
+                            method:"PUT",
+                            headers:{
+                                'Content-Type':'application/json',
+                            },
+                            body:JSON.stringify(guessSendsWords)
+                        });
+                        if(response.ok){
+                            console.log("Veri Başarılı bir şekilde güncellendi ! ");
+                        }else{
+                            console.error('Veri Güncellenme sırasında sorun oluştu !!!');
+                        }
+                    } catch (error) {
+                        console.log('Error : ', error);     
+                    }
+                    //
                     setTimeout(()=>{
                         resetFormValue();
-                        handleRandomWords();
+                        HandleRandomWords();
                         setKnowWord(0);
                         setPopupOpen(false);
                         darkMode==='true'?document.body.style.backgroundColor = '#222831':document.body.style.backgroundColor = '#f6f7f7';  
-                    },2000)   
+                    },1000)   
                 }else{
                     setKnowWord(2);
                     console.log('Kelimeyi bilemediniz lütfen tekrar dene ')
@@ -71,13 +98,18 @@ const DashboardPage:React.FC=()=>{
             toast.error('Hata oluştu');
         }
     };
-    const handleRandomWords=async()=>{
+    const HandleRandomWords=async()=>{
         const words:Word[]=getWords;
         const wordsLength:number=getWords.length;
+
+        // indexis in the session GetGuessingWords
+ 
+        //
         
-        const randomWord=Math.floor(Math.random()*wordsLength);
+        const randomWord:number=Math.floor(Math.random()*wordsLength);
         const indexWord:any=words[randomWord.toString()];
 
+        // turkish answer a lot of > 1
         const aLotOfTurkishAnswer:boolean = indexWord.turkish.includes(',');
         let deneme:any = [];
       
@@ -85,6 +117,7 @@ const DashboardPage:React.FC=()=>{
           const setWord:string[] = indexWord.turkish.split(',');
           deneme = setWord.map((word:string) => word.trim());
         }
+        // 
 
         const sendWords={
             english:indexWord.english,
@@ -93,8 +126,10 @@ const DashboardPage:React.FC=()=>{
             _v:indexWord._v,
         }
         setRandomWord(sendWords);
-        console.log(deneme);
-        console.log(indexWord);
+        setSendsGuessWords((prevData)=>({
+            ...prevData,
+            englishWord:sendWords.english,
+        }))
     }
 
     const handleOpenLambMenu=()=>{
@@ -108,8 +143,45 @@ const DashboardPage:React.FC=()=>{
     
     useEffect(()=>{
         setShowPageTransition(true);
-        handleRandomWords();
+        HandleRandomWords();
     },[]);
+    useEffect(()=>{
+        const SetSessionData=async()=>{
+            try {
+                const session=await getSession();
+                if(session.user){
+                    setSendsGuessWords((prevData)=>({
+                        ...prevData,
+                        userId:session.user.id
+                    }))
+                    console.log(session.user);
+
+                }else{
+                    console.log('Session Gelirken Hata oluştu');
+                }
+            } catch (error) {
+                console.log('Bilinmeyen Hata : ',error);
+            }
+        }
+        SetSessionData();
+    },[])
+    useEffect(()=>{
+        const SetUserGuessWord=async()=>{
+            try {
+                const sessions=await getSession();
+                if(sessions.user){
+                    const {data:response}=await axios.get('/api/data/getword');
+                    console.log(response);
+                }else{
+                    console.log('Session Gelirken Hata oluştu');
+                }
+            } catch (error) {
+                console.log('Error : ',error);
+            }
+        }
+        SetUserGuessWord();
+    },[session])
+
     useEffect(() => {
         if (randomWord) {
             setFormValue((prevForm) => ({
@@ -118,7 +190,7 @@ const DashboardPage:React.FC=()=>{
             }));
         }
     }, [randomWord]);
-    console.log(randomWord)
+
     return(
         <Transition show={showPageTransition} enter='transition-opacity duration-1000' enterFrom='opacity-0' enterTo='opacity-100'>
             <section className={` mx-auto w-full h-full flex flex-col p-24 justify-center items-center text-3xl font-bold transform duration-300 ease-in-out ${knowWord === 1 ? 'bg-green-500' : knowWord === 2 ? 'bg-red-600' : 'bg-sectionColor dark:bg-dark-color-1 dark:text-white'}`}>

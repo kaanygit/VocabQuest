@@ -1,4 +1,5 @@
 "use client"
+import {signIn } from "next-auth/react";
 import { Fragment, useEffect, useRef, useState } from "react"
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { BsFacebook } from "react-icons/bs";
@@ -64,6 +65,12 @@ const SignUpComponent:React.FC=()=>{
               }else{
                   const data=await res.json();
                   console.log(data);
+                  const response=await signIn("credentials",{
+                    email,password
+                });
+                if(response?.error){
+                    return console.log(response.error);
+                }
               }
               setWaitLogin(true);
           } catch (error) {

@@ -51,6 +51,7 @@ export const POST=async (request:Request):Promise<NewResponse>=>{
             surname:user.surname,
             email:user.email,
             role:user.role,
+            guessword:user.guessword
         }
     })
 }
