@@ -8,7 +8,7 @@ interface UserDocumention extends Document{
     username:string;
     email:string;
     password:string;
-    guessword:[];
+    guessword:any[];
     role:"admin"|"user";
 }
 

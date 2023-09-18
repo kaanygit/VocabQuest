@@ -103,7 +103,9 @@ const DashboardPage:React.FC=()=>{
         const wordsLength:number=getWords.length;
 
         // indexis in the session GetGuessingWords
- 
+        if(session?.user){
+            console.log(session.user);
+        }
         //
         
         const randomWord:number=Math.floor(Math.random()*wordsLength);
@@ -165,22 +167,7 @@ const DashboardPage:React.FC=()=>{
         }
         SetSessionData();
     },[])
-    useEffect(()=>{
-        const SetUserGuessWord=async()=>{
-            try {
-                const sessions=await getSession();
-                if(sessions.user){
-                    const {data:response}=await axios.get('/api/data/getword');
-                    console.log(response);
-                }else{
-                    console.log('Session Gelirken Hata oluştu');
-                }
-            } catch (error) {
-                console.log('Error : ',error);
-            }
-        }
-        SetUserGuessWord();
-    },[session])
+
 
     useEffect(() => {
         if (randomWord) {

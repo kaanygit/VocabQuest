@@ -1,13 +1,15 @@
 import storage from "redux-persist/lib/storage"
+import logger from 'redux-logger'
 import { Middleware, combineReducers } from 'redux';
 import { persistReducer } from 'redux-persist';
 import persistStore from 'redux-persist/es/persistStore';
 import wordsReducers from './features/words/words.reducer'
-import logger from 'redux-logger'
+import guessWordReducer from "./features/guessword/guess-word.reducer";
 import { applyMiddleware, compose, createStore } from "redux";
 
 const rootReducer=combineReducers({
     wordsReducers,
+    guessWordReducer
 })
 
 const persistConfig={
