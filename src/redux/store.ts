@@ -6,10 +6,12 @@ import persistStore from 'redux-persist/es/persistStore';
 import wordsReducers from './features/words/words.reducer'
 import guessWordReducer from "./features/guessword/guess-word.reducer";
 import { applyMiddleware, compose, createStore } from "redux";
+import userReducer from "./features/currentuser/current-user.reducer";
 
 const rootReducer=combineReducers({
     wordsReducers,
-    guessWordReducer
+    guessWordReducer,
+    userReducer
 })
 
 const persistConfig={

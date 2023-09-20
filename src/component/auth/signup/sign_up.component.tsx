@@ -7,6 +7,8 @@ import { FcGoogle } from "react-icons/fc";
 import { GrCircleInformation } from "react-icons/gr";
 import { ImGithub } from "react-icons/im";
 import { toast } from "react-toastify";
+import { useAppDispatch } from "../../../redux/hooks";
+import { setUser } from "../../../redux/features/currentuser/current-user.action";
 
 
 
@@ -29,6 +31,7 @@ interface initialValueTS{
 
 
 const SignUpComponent:React.FC=()=>{
+    const dispatch=useAppDispatch();
     const [formValue,setFormValue]=useState<initialValueTS>(initialValue);
     const [showPassword,setShowPassword]=useState<boolean>(false);
     const [waitLogin,setWaitLogin]=useState(false);
@@ -64,6 +67,7 @@ const SignUpComponent:React.FC=()=>{
                   toast.error("Email in already in use");
               }else{
                   const data=await res.json();
+                  dispatch(setUser(formValue.email))
                   console.log(data);
                   const response=await signIn("credentials",{
                     email,password

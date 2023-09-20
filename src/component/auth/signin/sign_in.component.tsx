@@ -6,6 +6,8 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { BsFacebook } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
 import { ImGithub } from "react-icons/im";
+import { useAppDispatch } from "../../../redux/hooks";
+import { setUser } from "../../../redux/features/currentuser/current-user.action";
 
 
 
@@ -22,6 +24,7 @@ const initialForm:initialFormValue={
 const SignInComponent:React.FC=()=>{
     const [showPassword,setShowPassword]=useState<boolean>(false);
     const [formValue,setFormValue]=useState<initialFormValue>(initialForm);
+    const dispatch=useAppDispatch();
     // const router=useRouter();
 
     const [waitLogin,setWaitLogin]=useState(false);
@@ -41,6 +44,7 @@ const SignInComponent:React.FC=()=>{
         const res=await signIn("credentials",{
             email,password
         });
+        dispatch(setUser(email))
         await setWaitLogin(false);
         if(res?.error){
             setWaitLogin(false);

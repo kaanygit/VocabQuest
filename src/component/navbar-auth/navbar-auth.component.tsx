@@ -8,8 +8,11 @@ import {FiSun} from 'react-icons/fi'
 import {HiOutlineMoon} from 'react-icons/hi'
 import { signOut } from 'next-auth/react';
 import Link from 'next/link'
+import { clearUser } from "../../redux/features/currentuser/current-user.action";
+import { useAppDispatch } from "../../redux/hooks";
 
 const NavbarAuthComponent:React.FC=()=>{
+    const dispatch=useAppDispatch();
     const [darkmode,setDarkmode]=useState<string|null>(localStorage.getItem('darkmode'));
     useEffect(()=>{
         setDarkmode(localStorage.getItem('darkmode'));
@@ -45,7 +48,7 @@ const NavbarAuthComponent:React.FC=()=>{
                 <button type='button' className='pr-5'>
                     <AiFillBell/>
                 </button>
-                <button className='pr-5 ' onClick={()=>signOut()}><LuLogOut/></button>
+                <button className='pr-5 ' onClick={()=>{signOut();dispatch(clearUser())}}><LuLogOut/></button>
                 {darkmode==="true"?(
                     <button className="pr-5 text-2xl font-black" onClick={handleDarkmode}><HiOutlineMoon/></button>
                 ):(
