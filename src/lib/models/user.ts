@@ -8,9 +8,9 @@ interface UserDocumention extends Document{
     username:string;
     email:string;
     password:string;
-    profileDescription:string;
+    descriptions:[];
     guessword:any[];
-    guesswordfailuera:any[];
+    guesswordfailuera:[];
     friends:[];
     role:"admin"|"user";
 }
@@ -36,10 +36,10 @@ const userDocumentSchema=new Schema<UserDocumention,{},Methods>({
     email:{type:String,required:true,unique:true},
     username:{type:String,required:true,unique:true,trim:true},
     password:{type:String,required:true},
-    profileDescription:{type:String},
     guessword:{type:[],required:true,default:[]},
     friends:{type:[],required:true,default:[]},
     guesswordfailuera:{type:[],required:true,default:[]},
+    descriptions:{type:[],required:true,default:[]},
     role:{type:String,enum:['admin','user'],default:'user'},    
 });
 
