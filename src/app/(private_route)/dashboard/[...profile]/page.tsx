@@ -4,8 +4,7 @@ import { LoadingComponent } from "../../../../component/export";
 import Image from "next/image";
 import TestUserPhoto from '../../../../assets/main-character.png'
 import { getSession } from "next-auth/react";
-import { current } from "@reduxjs/toolkit";
-import session from "redux-persist/lib/storage/session";
+
 
 interface ParamsProps{
     params:{
@@ -18,7 +17,7 @@ interface ProfileParams{
     surname:string;
     username:string;
     email:string;
-    profileDescription:string;
+    descriptions:Array<{ profileDescription: string }>;
     guessword:string[];
     friends:[];
     _id:string,
@@ -39,7 +38,7 @@ const initialStateProfile:ProfileParams={
     surname:'',
     username:'',
     email:'',
-    profileDescription:'',
+    descriptions:[{ profileDescription: '' }],
     guessword:[],
     friends:[],
     _id:''
@@ -75,6 +74,19 @@ const ProfilePage:React.FC<ParamsProps>=({params})=>{
                 if(response.ok){
                     const data=await response.json();
                     const res=data.message[0]===undefined?setGetUserHave(false):setGetUserHave(true);
+                    const datas=data.message[0];
+                    console.log(data.message[0]);
+                    setCurrentUserProfileParams((prevData)=>({
+                        ...prevData,
+                        name:datas.name,
+                        surname:data.surname,
+                        username:datas.username,
+                        email:datas.email,
+                        descriptions:datas.descriptions,
+                        guessword:datas.guessword,
+                        friends:datas.friends,
+                        _id:datas._id
+                    }))
                     setCurrentUserProfileParams(data.message[0]);
                     console.log('PROFİL VERİSİ',data);
                     console.log(res);
@@ -120,6 +132,7 @@ const ProfilePage:React.FC<ParamsProps>=({params})=>{
     const profileDesign=async()=>{
         try {
             console.log('profil düzenleme gönder'); 
+            console.log(sendProfileDescription);
             const response=await fetch('/api/profile/setProfile',{
                 method:"PUT",
                 headers:{
@@ -138,7 +151,7 @@ const ProfilePage:React.FC<ParamsProps>=({params})=>{
         }
         setDesignProfile(false);
     }
-
+    console.log(currentUserProfileParams.descriptions)
 
     return(
         <section className="mx-auto w-full h-full flex flex-col p-24 justify-center items-center text-3xl font-bold dark:bg-dark-color-1">
@@ -167,13 +180,22 @@ const ProfilePage:React.FC<ParamsProps>=({params})=>{
                                     )}
                                 </div>
                             </div>
-                            <div className="w-full flex flex-col justify-center items-center mt-10">
-                                <span>{currentUserProfileParams.name +" "+ currentUserProfileParams.surname}</span>
-                                <span className="text-gray-700 font-medium text-lg mt-4">@{currentUserProfileParams.username}</span>
+                            <div className="w-full flex flex-col h-full  mt-10 ">
+                                <span className="flex justify-center items-center">{currentUserProfileParams.name +" "+ currentUserProfileParams.surname}</span>
+                                <span className="text-gray-700 font-medium text-lg mt-4 w-full h-full flex justify-center items-center">@{currentUserProfileParams.username}</span>
                                 {designProfile?(
-                                    <textarea onChange={handleTextArea} className="mt-4 mb-10 p-3 rounded-lg" placeholder="Profile Content" name='designProfileContent' rows={5} cols={50} />
+                                    <textarea onChange={handleTextArea} minLength={20} required className="mt-4 mb-10 p-3 rounded-lg" placeholder="Profile Content" name='designProfileContent' rows={5} cols={50} />
                                 ):(
-                                    <span className="mt-4 mb-10">Kullanıcının içeriği istediği kendinden bahsetmek istediği alan</span>
+                                    currentUserProfileParams.descriptions && currentUserProfileParams.descriptions.length > 0?(
+                                        <div className="mt-4 mb-10 flex flex-col w-full justify-start items-center overflow-hidden">
+                                        <span className="max-h-48 overflow-y-auto">
+                                          {currentUserProfileParams?.descriptions[0].profileDescription}
+                                        </span>
+                                      </div>
+                                        // <div  className="mt-4 mb-10 flex w-full brake-all justify-center items-center whitespace-pre-line">{currentUserProfileParams?.descriptions[0].profileDescription}</div>
+                                    ):(
+                                        <span className="mt-4 mb-10">Kullanıcının içeriği istediği kendinden bahsetmek istediği alan</span>
+                                    )
                                 )}
                             </div>
                         </>
